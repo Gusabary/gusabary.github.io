@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"><title>B 树、B+ 树和 B* 树 | Gusabary</title><meta name="description" content="B 树、B+ 树和 B* 树"><meta name="keywords" content="Data Structure"><meta name="author" content="Gusabary"><meta name="copyright" content="Gusabary"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/avatar.jpeg"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="B 树、B+ 树和 B* 树"><meta name="twitter:description" content="B 树、B+ 树和 B* 树"><meta name="twitter:image" content="http://gusabary.cn/covers/17.jpg"><meta property="og:type" content="article"><meta property="og:title" content="B 树、B+ 树和 B* 树"><meta property="og:url" content="http://gusabary.cn/2020/02/28/B%E6%A0%91%E3%80%81B-%E6%A0%91%E5%92%8CB-%E6%A0%91/"><meta property="og:site_name" content="Gusabary"><meta property="og:description" content="B 树、B+ 树和 B* 树"><meta property="og:image" content="http://gusabary.cn/covers/17.jpg"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>const autoChangeMode = 'false'
+var t = Cookies.get("theme");
+if (autoChangeMode == '1'){
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+const isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+const isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+if (t === undefined){
+  if (isLightMode) activateLightMode()
+  else if (isDarkMode) activateDarkMode()
+  else if (isNotSpecified || hasNoSupport){
+    console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+    now = new Date();
+    hour = now.getHours();
+    isNight = hour < 6 || hour >= 18
+    isNight ? activateDarkMode() : activateLightMode()
+}
+} else if (t == 'light') activateLightMode()
+else activateDarkMode()
+
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="http://gusabary.cn/2020/02/28/B%E6%A0%91%E3%80%81B-%E6%A0%91%E5%92%8CB-%E6%A0%91/"><link rel="next" title="二叉搜索树和平衡二叉树" href="http://gusabary.cn/2020/02/27/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E5%92%8C%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://xxx/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  bookmark: {
+    title: 'Snackbar.bookmark.title',
+    message_prev: 'Press',
+    message_next: 'to bookmark this page'
+  },
+  runtime_unit: 'days',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  isHome: false,
+  isPost: true
+  
+}</script><meta name="generator" content="Hexo 4.2.0"></head><body><header> <div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Gusabary</a></span><span class="toggle-menu pull_right close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> About</span></a></div></div></span></div></header><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">Articles</div><div class="length_num">6</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">Tags</div><div class="length_num">4</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> About</span></a></div></div></div><div id="mobile-sidebar-toc"><div class="toc_mobile_headline">Catalog</div><div class="sidebar-toc__content"><ol class="toc_mobile_items"><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#B-树"><span class="toc_mobile_items-number">1.</span> <span class="toc_mobile_items-text">B 树</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#B-树-1"><span class="toc_mobile_items-number">2.</span> <span class="toc_mobile_items-text">B+ 树</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#B-树-2"><span class="toc_mobile_items-number">3.</span> <span class="toc_mobile_items-text">B* 树</span></a></li></ol></div></div></div><div id="body-wrap"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true">     </i><div class="auto_open" id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#B-树"><span class="toc-number">1.</span> <span class="toc-text">B 树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-树-1"><span class="toc-number">2.</span> <span class="toc-text">B+ 树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-树-2"><span class="toc-number">3.</span> <span class="toc-text">B* 树</span></a></li></ol></div></div></div><main id="content-outer"><div id="top-container" style="background-image: url(/covers/17.jpg)"><div id="post-info"><div id="post-title"><div class="posttitle">B 树、B+ 树和 B* 树</div></div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Created 2020-02-28<span class="post-meta__separator">|</span><i class="fa fa-history fa-fw" aria-hidden="true"></i> Updated 2020-02-28</time><div class="post-meta-wordcount"><div class="post-meta-pv-cv"><span><i class="fa fa-eye post-meta__icon fa-fw" aria-hidden="true"> </i>Post View:</span><span id="busuanzi_value_page_pv"></span></div></div></div></div></div><div class="layout layout_post" id="content-inner">   <article id="post"><div class="article-container" id="post-content"><h2 id="B-树"><a href="#B-树" class="headerlink" title="B 树"></a>B 树</h2><ul>
+<li><p>B 树即 B-Tree，所以也叫 B- 树，也是一种自平衡搜索树，但他是多路查找树，也即多叉树。因为像 AVL 树，红黑树这样的自平衡二叉查找树在使用的时候往往认为数据都是存在内存里的，而 B 树的使用场景中往往数据很多，需要存在磁盘中，而对于查找这样的操作，每访问一次树节点就需要读一次磁盘，所以降低树的高度变得很关键，使用多叉树的数据结构也就很自然了。</p>
+</li>
+<li><p>B 树的性质：</p>
+<ul>
+<li>所有叶子节点在同一层</li>
+<li>B 树有个很重要的属性叫做 minimal degree，用 t 表示，和磁盘的 block size 有关</li>
+<li>根节点最少有 1 个 key，其他节点最少有 t-1 个 key</li>
+<li>所有节点最多有 2t-1 个 key</li>
+<li>一个节点的儿子数量等于该节点所含 key 的数量加 1，最多有 2t 个儿子，2t 也称为该 B 树的阶。也就是说每个节点中是一个指向儿子节点的指针，一个 key，这样间隔着排列，最后是指向儿子节点的指针。</li>
+<li>节点中的 key 升序存储，k1 和 k2 之间的那个儿子节点所含的 key 一定在 k1 和 k2 范围内</li>
+<li>查找，插入，删除的时间复杂度均为 O(logn)</li>
+</ul>
+</li>
+<li><p>B 树的插入，从根节点开始，一直寻找到叶子节点，直到找到一个合适的位置，插入 key。但是因为每个节点最多容纳 2t-1 个 key，所以当寻找的过程中遇到某个节点已经有 2t-1 个 key 时，会进行 split 操作，将已经存满 key 的节点一分为二，中间节点放到父节点中（注意父节点必不可能存满 key，因为是从父节点遍历下来的，如果父节点存满了，那在此之前父节点应该先被 split，这种策略称为 proactive insertion，主动插入；相对地，reactive insertion，被动插入是说只有当新的 key 真的要插入存满的节点时才 split，而不仅仅是遍历经过，这种策略有可能导致一路往上 split，浪费时间，但是主动插入也可能会导致过早的不必要的 split）</p>
+<p>如果根节点存满了，就将根节点一分为二，将中间的 key 放入新的根节点，左右两边作为儿子节点挂到新的根节点下，这也是唯一增加树高的方式。</p>
+</li>
+<li><p>B 树的删除和 BST 类似，如果删除的是叶节点中的 key，直接删除（有可能需要修复）；如果删除的是树枝节点中的 key，将该 key 的后继提升上来，删除后继，由于后继一定存在于叶子节点中，所以也就化归成了删除叶节点中 key 的情况。</p>
+</li>
+<li><p>如果叶节点由于被删除了一个 key 而所含的 key 的个数不足 t-1 个了，则需要进行修复，修复过程从该叶节点开始。</p>
+<ul>
+<li>如果待修复节点有兄弟节点所含的 key 个数多于 t-1，则从兄弟节点移一个 key 到父节点，再从父节点移一个 key 到待修复节点，修复结束。（注意如果不是叶子节点这一层的话，移动 key 的同时还要移动指向儿子节点的指针）</li>
+<li>如果待修复节点的兄弟所含的 key 个数都是 t-1，不能从他们那里借，那只能进行合并，父节点中夹在待修复节点和兄弟节点之间的 key，以及待修复节点，兄弟节点的 key 合并成一个新的节点（新节点所含 key 的个数一定小于等于 2t-1）。然后将父节点标记为待修复节点。</li>
+</ul>
+<p>循环直到待修复节点所含 key 的个数不少于 t-1 为止。如果根节点只剩一个 key，又由于上述合并操作需要从父节点拿一个 key，这可能会导致根节点不含任何 key 了，此时便删除根节点。</p>
+<p>可见不管是插入还是删除，树高的变化总是从根节点开始的，这和 BST 不同，它的树高的变化是从叶节点开始的。</p>
+</li>
+<li><p><em>references:</em></p>
+<ul>
+<li><a href="https://www.geeksforgeeks.org/introduction-of-b-tree-2/" target="_blank" rel="noopener">插入参考</a></li>
+<li><a href="https://www.cnblogs.com/nullzx/p/8729425.html" target="_blank" rel="noopener">删除参考</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="B-树-1"><a href="#B-树-1" class="headerlink" title="B+ 树"></a>B+ 树</h2><ul>
+<li>B+ 树和 B 树最大的区别就是树枝节点不保存 key，只用作索引，且每个叶子节点都有指向相邻叶子节点的指针。</li>
+<li><a href="https://www.cnblogs.com/nullzx/p/8729425.html" target="_blank" rel="noopener"><em>reference</em></a></li>
+</ul>
+<h2 id="B-树-2"><a href="#B-树-2" class="headerlink" title="B* 树"></a>B* 树</h2><ul>
+<li>B* 树在 B+ 树的基础上多了几条性质：<ul>
+<li>叶子节点最少要有 4t/3 个 key（即最少占 2/3），而不是原来的 t-1 个（最少占 1/2），好处是节点的空间使用率会变高</li>
+<li>不仅叶子节点一层有指向兄弟节点的指针，所有树枝节点也加上了指向兄弟节点的指针，且存满时不会分裂，而是向兄弟节点转移 key，如果兄弟节点也满了，就各拿出 1/3 创建一个新的节点。猜想删除时如果余量不足了会从兄弟节点拿，兄弟节点 key 也不够了的话就删除一个兄弟节点把他所含的 key 均分给其他兄弟。</li>
+</ul>
+</li>
+<li><a href="https://zhuanlan.zhihu.com/p/27700617" target="_blank" rel="noopener"><em>reference</em></a></li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Gusabary</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://gusabary.cn/2020/02/28/B%E6%A0%91%E3%80%81B-%E6%A0%91%E5%92%8CB-%E6%A0%91/">http://gusabary.cn/2020/02/28/B%E6%A0%91%E3%80%81B-%E6%A0%91%E5%92%8CB-%E6%A0%91/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Data-Structure/">Data Structure    </a></div><div class="post_share"><div class="social-share" data-image="/covers/17.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination_post" id="pagination"><div class="next-post pull-full"><a href="/2020/02/27/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E5%92%8C%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/"><img class="next_cover lazyload" data-src="/covers/4.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">Next Post</div><div class="next_info"><span>二叉搜索树和平衡二叉树</span></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> Recommend</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/02/27/二叉搜索树和平衡二叉树/" title="二叉搜索树和平衡二叉树"><img class="relatedPosts_cover lazyload"data-src="/covers/4.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-02-27</div><div class="relatedPosts_title">二叉搜索树和平衡二叉树</div></div></a></div></div><div class="clear_both"></div></div></div></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2020 By Gusabary</div><div class="framework-info"><span>Driven </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Nature's blessings upon you!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="Read Mode"></i><i class="fa fa-plus" id="font_plus" title="Increase font size"></i><i class="fa fa-minus" id="font_minus" title="Decrease font size"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="Traditional Chinese and Simplified Chinese Conversion" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="Dark Mode"></i></div><div id="rightside-config-show"><div id="rightside_config" title="Setting"><i class="fa fa-cog" aria-hidden="true"></i></div><i class="fa fa-list-ul close" id="mobile-toc-button" title="Table of Contents" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="Back to top" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script></body></html>
